@@ -23,9 +23,9 @@ import org.apache.storm.hive.common.HiveOptions;
 
 import com.hortonworks.lineage.demo.bolts.PrintTransaction;
 import com.hortonworks.lineage.demo.util.Constants;
+import com.hortonworks.lineage.demo.util.ShoppingChartEventJSONScheme;
 import com.hortonworks.lineage.demo.util.TransactionEventJSONScheme;
 
-/*
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
@@ -37,17 +37,10 @@ import org.apache.storm.kafka.KafkaSpout;
 import org.apache.storm.kafka.KeyValueSchemeAsMultiScheme;
 import org.apache.storm.kafka.SpoutConfig;
 import org.apache.storm.kafka.ZkHosts;
-import org.apache.storm.spout.SchemeAsMultiScheme;
-import org.apache.storm.task.OutputCollector;
-import org.apache.storm.task.TopologyContext;
-import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.TopologyBuilder;
-import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
-import org.apache.storm.tuple.Tuple;
-import org.apache.storm.tuple.Values;
-*/
 
+/*
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
@@ -65,9 +58,9 @@ import storm.kafka.ZkHosts;
 import storm.kafka.bolt.KafkaBolt;
 import storm.kafka.bolt.mapper.FieldNameBasedTupleToKafkaMapper;
 import storm.kafka.bolt.selector.DefaultTopicSelector;
+*/
 
 public class StormLineageTopology {
-	 @SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void main(String[] args) {
 	     TopologyBuilder builder = new TopologyBuilder();
 	     Constants constants = new Constants();   
@@ -114,6 +107,13 @@ public class StormLineageTopology {
 	      ProcessedTransactionKafkaSpoutConfig.startOffsetTime = kafka.api.OffsetRequest.LatestTime();
 	      KafkaSpout customerTransactionValidationKafkaSpout = new KafkaSpout(ProcessedTransactionKafkaSpoutConfig);
 	      
+	      SpoutConfig ShoppingCartEventsKafkaSpoutConfig = new SpoutConfig(hosts, constants.getIncomingTransactionsTopicName(), constants.getZkKafkaPath(), UUID.randomUUID().toString());
+	      incomingTransactionsKafkaSpoutConfig.scheme = new KeyValueSchemeAsMultiScheme(new ShoppingChartEventJSONScheme());
+	      incomingTransactionsKafkaSpoutConfig.ignoreZkOffsets = true;
+	      incomingTransactionsKafkaSpoutConfig.useStartOffsetTimeIfOffsetOutOfRange = true;
+	      incomingTransactionsKafkaSpoutConfig.startOffsetTime = kafka.api.OffsetRequest.LatestTime();
+	      KafkaSpout ShoppingCartEventsKafkaSpout = new KafkaSpout(ShoppingCartEventsKafkaSpoutConfig);
+	      
 	      Map<String, Object> hbConf = new HashMap<String, Object>();
 	      hbConf.put("hbase.rootdir", constants.getNameNode() + "/apps/hbase/data/");
 	      hbConf.put("hbase.zookeeper.quorum", constants.getZkHost());
@@ -129,13 +129,50 @@ public class StormLineageTopology {
 	      conf.put("kafka.broker.properties", kafkaConf);
 	      
 	      SimpleHBaseMapper transactionMapper = new SimpleHBaseMapper()
-	              .withRowKeyField("transactionId")
-	              .withColumnFields(new Fields("accountNumber","amount"))
-	              .withColumnFamily("cf"); 
+	              .withRowKeyField("cart_id")
+	              .withColumnFields(new Fields("cart_id",
+	    					"billing_order_id",
+	    					"opportunity_id",
+	    					"transaction_id",
+	    					"monthly_charge",
+	    					"one_time_charge",
+	    					"spcl_instructions",
+	    					"house_debt_amount",
+	    					"deposit_amount",
+	    					"sik_eligible",
+	    					"house_debt_acceptance",
+	    					"previous_balance",
+	    					"disable_sik_opts",
+	    					"creation_date",
+	    					"last_update",
+	    					"timestamp", 
+	    					"past_due_amount",
+	    					"house_debt_acctnum", 
+	    					"term_ids",
+	    					"xhs_credit_check",
+	    					"collected_deposit_amt", 
+	    					"default_offer",
+	    					"upsell_selected", 
+	    					"dvr_selected", 
+	    					"additional_dvrs_count", 
+	    					"max_deposit_amount", 
+	    					"deposit_offer_id", 
+	    					"credit_check_pass", 
+	    					"has_installments_for_install", 
+	    					"amnesty_amount", 
+	    					"prepay_for_acctstanding", 
+	    					"pre_pay_amount", 
+	    					"credit_tier_max_deposit_limit", 
+	    					"credit_bypass", 
+	    					"tax_amount", 
+	    					"hd_tech_charge", 
+	    					"hsd_repackage"))
+	              .withColumnFamily("0"); 
 	      
+	      /*
 	      DelimitedRecordHiveMapper processedTransactionHiveMapper = new DelimitedRecordHiveMapper()
 	    		  .withColumnFields(new Fields("transactionId","accountNumber","amount"));
-	    		 
+	      
 	      HiveOptions processedTransactionHiveOptions = new HiveOptions(constants.getHiveMetaStoreURI(),
 	    				 							constants.getHiveDbName(),
 	    				 							"ProcessedTransactions",
@@ -148,21 +185,70 @@ public class StormLineageTopology {
 	    				 							constants.getHiveDbName(),
 	    				 							"PostProcessedTransactions",
 	    				 							postProcessedTransactionHiveMapper);
+	      */
 	      
+	      DelimitedRecordHiveMapper ShoppingCartEventHiveMapper = new DelimitedRecordHiveMapper()
+	    		  .withColumnFields(new Fields(	
+	    				  	"cart_id",
+	    					"billing_order_id",
+	    					"opportunity_id",
+	    					"transaction_id",
+	    					"monthly_charge",
+	    					"one_time_charge",
+	    					"spcl_instructions",
+	    					"house_debt_amount",
+	    					"deposit_amount",
+	    					"sik_eligible",
+	    					"house_debt_acceptance",
+	    					"previous_balance",
+	    					"disable_sik_opts",
+	    					"creation_date",
+	    					"last_update",
+	    					"timestamp", 
+	    					"past_due_amount",
+	    					"house_debt_acctnum", 
+	    					"term_ids",
+	    					"xhs_credit_check",
+	    					"collected_deposit_amt", 
+	    					"default_offer",
+	    					"upsell_selected", 
+	    					"dvr_selected", 
+	    					"additional_dvrs_count", 
+	    					"max_deposit_amount", 
+	    					"deposit_offer_id", 
+	    					"credit_check_pass", 
+	    					"has_installments_for_install", 
+	    					"amnesty_amount", 
+	    					"prepay_for_acctstanding", 
+	    					"pre_pay_amount", 
+	    					"credit_tier_max_deposit_limit", 
+	    					"credit_bypass", 
+	    					"tax_amount", 
+	    					"hd_tech_charge", 
+	    					"hsd_repackage"));
+	    
+	      HiveOptions ShoppingCartEventTransactionHiveOptions = new HiveOptions(constants.getHiveMetaStoreURI(),
+	    				 							constants.getHiveDbName(),
+	    				 							"cart",
+	    				 							ShoppingCartEventHiveMapper);
+	      
+	      /*
 	      KafkaBolt processedTransactionForwardKafkaBolt = new KafkaBolt()
 	              .withTopicSelector(new DefaultTopicSelector(constants.getProcessedTransactionTopicName()))
 	              .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper());
+	      */
 	      
-	      builder.setSpout("IncomingTransactionsKafkaSpout", incomingTransactionsKafkaSpout);
-	      builder.setBolt("PrintTransaction", new PrintTransaction(), 1).shuffleGrouping("IncomingTransactionsKafkaSpout");
-	      builder.setBolt("ProcessedTransactionPersistToHBase", new HBaseBolt("TransactionHistory", transactionMapper).withConfigKey("hbase.conf"), 1).shuffleGrouping("PrintTransaction", "HBaseStream");
-	      builder.setBolt("ProcessedTransactionPersistToHive", new HiveBolt(processedTransactionHiveOptions),1).shuffleGrouping("PrintTransaction", "HiveStream");
+	      //builder.setSpout("IncomingTransactionsKafkaSpout", incomingTransactionsKafkaSpout);
+	      builder.setSpout("ShoppingCartEventsKafkaSpout", ShoppingCartEventsKafkaSpout);
+	      builder.setBolt("PrintTransaction", new PrintTransaction(), 1).shuffleGrouping("ShoppingCartEventsKafkaSpout");
+	      builder.setBolt("ProcessedTransactionPersistToHBase", new HBaseBolt("cart", transactionMapper).withConfigKey("hbase.conf"), 1).shuffleGrouping("PrintTransaction", "HBaseStream");
+	      builder.setBolt("ProcessedTransactionPersistToHive", new HiveBolt(ShoppingCartEventTransactionHiveOptions),1).shuffleGrouping("PrintTransaction", "HiveStream");
 	      //builder.setBolt("ProcessedTransactionForwardToKafka", processedTransactionForwardKafkaBolt, 1).shuffleGrouping("PrintTransaction", "KafkaStream");
-	      
+	      /*
 	      builder.setSpout("ProcessedTransactionKafkaSpout", customerTransactionValidationKafkaSpout);
 	      builder.setBolt("PrintProcessedTransaction", new PrintTransaction(), 1).shuffleGrouping("ProcessedTransactionKafkaSpout");
 	      builder.setBolt("PostProcessedTransactionPersistToHive", new HiveBolt(postProcessedTransactionHiveOptions),1).shuffleGrouping("PrintTransaction", "HiveStream");	      
-	      
+	      */
 	      conf.setNumWorkers(1);
 	      conf.setMaxSpoutPending(5000);
 	      conf.setMaxTaskParallelism(1);

@@ -12,17 +12,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.hortonworks.lineage.demo.events.IncomingTransaction;
 
+/*
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
 import storm.kafka.KeyValueScheme;
+*/
 
-/*
 import org.apache.storm.kafka.KeyValueScheme;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
-*/
-
-
 
 public class TransactionEventJSONScheme implements KeyValueScheme {
 		private static final long serialVersionUID = 1L;
@@ -50,7 +48,6 @@ public class TransactionEventJSONScheme implements KeyValueScheme {
 	        return new Fields("TransactionKey", "IncomingTransaction");
 	    }
 
-	    
 		public List<Object> deserialize(byte[] arg0) {
 			return null;
 		}

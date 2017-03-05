@@ -32,10 +32,12 @@ public class ShoppingChartEventJSONScheme implements KeyValueScheme {
 			String eventJSONString = StringScheme.deserializeString(value);
 	        ShoppingCartEvent incomingTransaction = null;
 	        ObjectMapper mapper = new ObjectMapper();
-	        
+	        System.out.println("***** Key: " + eventKey + ", Value: " + eventJSONString);
 	        try {
 	        	JsonNode rootNode = mapper.readTree(eventJSONString);
+	        	System.out.println("***** rootNode: " + rootNode.toString());
 	        	JsonNode valueNode = rootNode.path("value");
+	        	System.out.println("***** valueNode: " + valueNode.toString());
 	        	incomingTransaction = mapper.readValue(valueNode, ShoppingCartEvent.class);
 			} catch (JsonParseException e) {
 				e.printStackTrace();
@@ -51,9 +53,13 @@ public class ShoppingChartEventJSONScheme implements KeyValueScheme {
 			String eventJSONString = StringScheme.deserializeString(value);
 			ShoppingCartEvent incomingTransaction = null;
 	        ObjectMapper mapper = new ObjectMapper();
-	        
+	        System.out.println("***** Value: " + eventJSONString);
 	        try {
-				incomingTransaction = mapper.readValue(eventJSONString, ShoppingCartEvent.class);
+	        	JsonNode rootNode = mapper.readTree(eventJSONString);
+	        	System.out.println("***** rootNode: " + rootNode.toString());
+	        	JsonNode valueNode = rootNode.path("value");
+	        	System.out.println("***** valueNode: " + valueNode.toString());
+	        	incomingTransaction = mapper.readValue(valueNode, ShoppingCartEvent.class);
 			} catch (JsonParseException e) {
 				e.printStackTrace();
 			} catch (JsonMappingException e) {

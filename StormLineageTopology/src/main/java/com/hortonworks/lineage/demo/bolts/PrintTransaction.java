@@ -28,8 +28,9 @@ public class PrintTransaction extends BaseRichBolt {
 
 	public void execute(Tuple tuple) {
 		//IncomingTransaction transaction = (IncomingTransaction) tuple.getValueByField("IncomingTransaction");
+		System.out.println("***** Tuple Index 0: " + tuple.getValue(0));
 		ShoppingCartEvent transaction = (ShoppingCartEvent) tuple.getValueByField("IncomingTransaction");
-		System.out.println(transaction.toString());	
+		System.out.println("***** Transaction: " + transaction.toString());	
 		collector.ack(tuple);
 		collector.emit("HiveStream", new Values(transaction.getCart_id(), 
 				transaction.getBilling_order_id(),

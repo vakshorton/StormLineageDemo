@@ -6,11 +6,12 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 import org.apache.storm.kafka.StringScheme;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hortonworks.lineage.demo.events.ShoppingCartEvent;
 
 /*
@@ -32,13 +33,14 @@ public class ShoppingChartEventJSONScheme implements KeyValueScheme {
 			String eventJSONString = StringScheme.deserializeString(value);
 	        ShoppingCartEvent incomingTransaction = null;
 	        ObjectMapper mapper = new ObjectMapper();
+	        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true); 
 	        System.out.println("***** Key: " + eventKey + ", Value: " + eventJSONString);
 	        try {
 	        	JsonNode rootNode = mapper.readTree(eventJSONString);
 	        	System.out.println("***** rootNode: " + rootNode.toString());
 	        	JsonNode valueNode = rootNode.path("value");
 	        	System.out.println("***** valueNode: " + valueNode.toString());
-	        	incomingTransaction = mapper.readValue(valueNode, ShoppingCartEvent.class);
+	        	incomingTransaction = mapper.readValue(valueNode.toString(), ShoppingCartEvent.class);
 			} catch (JsonParseException e) {
 				e.printStackTrace();
 			} catch (JsonMappingException e) {
@@ -59,7 +61,7 @@ public class ShoppingChartEventJSONScheme implements KeyValueScheme {
 	        	System.out.println("***** rootNode: " + rootNode.toString());
 	        	JsonNode valueNode = rootNode.path("value");
 	        	System.out.println("***** valueNode: " + valueNode.toString());
-	        	incomingTransaction = mapper.readValue(valueNode, ShoppingCartEvent.class);
+	        	incomingTransaction = mapper.readValue(valueNode.toString(), ShoppingCartEvent.class);
 			} catch (JsonParseException e) {
 				e.printStackTrace();
 			} catch (JsonMappingException e) {

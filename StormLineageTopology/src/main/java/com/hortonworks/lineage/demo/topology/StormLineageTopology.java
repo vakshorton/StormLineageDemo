@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.apache.storm.hbase.bolt.HBaseBolt;
 import org.apache.storm.hbase.bolt.mapper.SimpleHBaseMapper;
+/*
 import org.apache.storm.hdfs.bolt.HdfsBolt;
 import org.apache.storm.hdfs.bolt.format.DefaultFileNameFormat;
 import org.apache.storm.hdfs.bolt.format.DelimitedRecordFormat;
@@ -16,7 +17,7 @@ import org.apache.storm.hdfs.bolt.rotation.FileRotationPolicy;
 import org.apache.storm.hdfs.bolt.rotation.FileSizeRotationPolicy;
 import org.apache.storm.hdfs.bolt.rotation.FileSizeRotationPolicy.Units;
 import org.apache.storm.hdfs.bolt.sync.CountSyncPolicy;
-import org.apache.storm.hdfs.bolt.sync.SyncPolicy;
+import org.apache.storm.hdfs.bolt.sync.SyncPolicy; */
 import org.apache.storm.hive.bolt.HiveBolt;
 import org.apache.storm.hive.bolt.mapper.DelimitedRecordHiveMapper;
 import org.apache.storm.hive.common.HiveOptions;
@@ -64,23 +65,17 @@ public class StormLineageTopology {
 	public static void main(String[] args) {
 	     TopologyBuilder builder = new TopologyBuilder();
 	     Constants constants = new Constants();   
-	     // Use pipe as record boundary
-	  	  RecordFormat format = new DelimitedRecordFormat().withFieldDelimiter(",");
-
-	  	  //Synchronize data buffer with the filesystem every 1000 tuples
+	  	 /* 
+	     RecordFormat format = new DelimitedRecordFormat().withFieldDelimiter(",");
 	  	  SyncPolicy syncPolicy = new CountSyncPolicy(1000);
-
-	  	  // Rotate data files when they reach five MB
 	  	  FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(5.0f, Units.MB);
-
-	  	  // Use default, Storm-generated file names
 	  	  FileNameFormat transactionLogFileNameFormat = new DefaultFileNameFormat().withPath(constants.getHivePath());
 	  	  HdfsBolt LogTransactionHdfsBolt = new HdfsBolt()
 	  		     .withFsUrl(constants.getNameNode())
 	  		     .withFileNameFormat(transactionLogFileNameFormat)
 	  		     .withRecordFormat(format)
 	  		     .withRotationPolicy(rotationPolicy)
-	  		     .withSyncPolicy(syncPolicy);
+	  		     .withSyncPolicy(syncPolicy);*/
 	  	  System.out.println("********************** Starting Topology.......");
 	  	  System.out.println("********************** Zookeeper Host: " + constants.getZkHost());
 	  	  System.out.println("********************** Zookeeper Port: " + constants.getZkPort());

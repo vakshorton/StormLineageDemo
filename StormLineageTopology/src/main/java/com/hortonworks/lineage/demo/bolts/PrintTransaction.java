@@ -28,12 +28,13 @@ public class PrintTransaction extends BaseRichBolt {
 
 	public void execute(Tuple tuple) {
 		//IncomingTransaction transaction = (IncomingTransaction) tuple.getValueByField("IncomingTransaction");
-		System.out.println("***** Tuple Size: " + tuple.size() + " Index 0: " + tuple.getValue(0).toString());
-		System.out.println("***** Tuple Size: " + tuple.size() + " Index 1: " + tuple.getValue(1).toString());
-		ShoppingCartEvent transaction = (ShoppingCartEvent) tuple.getValueByField("IncomingTransaction");
-		System.out.println("***** Transaction: " + transaction.toString());	
-		collector.ack(tuple);
-		collector.emit("HiveStream", new Values(transaction.getCart_id(), 
+		if(tuple.size() > 2){
+			System.out.println("***** Tuple Size: " + tuple.size() + " Index 0: " + tuple.getValue(0).toString());
+			System.out.println("***** Tuple Size: " + tuple.size() + " Index 1: " + tuple.getValue(1).toString());
+			ShoppingCartEvent transaction = (ShoppingCartEvent) tuple.getValueByField("IncomingTransaction");
+			System.out.println("***** Transaction: " + transaction.toString());	
+			collector.ack(tuple);
+			collector.emit("HiveStream", new Values(transaction.getCart_id(), 
 				transaction.getBilling_order_id(),
 				transaction.getOpportunity_id(),	
 				transaction.getTransaction_id(),
@@ -70,7 +71,7 @@ public class PrintTransaction extends BaseRichBolt {
 				transaction.getHd_tech_charge(),
 				transaction.getHsd_repackage()));
 		
-		collector.emit("HBaseStream", new Values(transaction.getCart_id(), 
+			collector.emit("HBaseStream", new Values(transaction.getCart_id(), 
 				transaction.getBilling_order_id(),
 				transaction.getOpportunity_id(),	
 				transaction.getTransaction_id(),
@@ -106,9 +107,9 @@ public class PrintTransaction extends BaseRichBolt {
 				transaction.getTax_amount(),
 				transaction.getHd_tech_charge(),
 				transaction.getHsd_repackage()));
-		//collector.emit("KafkaStream", new Values(transaction.getTransactionId(), transaction));
+			//collector.emit("KafkaStream", new Values(transaction.getTransactionId(), transaction));
+		}
 	}
-
 	public void prepare(Map arg0, TopologyContext arg1, OutputCollector collector) {
 		this.collector = collector;	
 	}

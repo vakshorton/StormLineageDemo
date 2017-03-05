@@ -205,8 +205,8 @@ public class StormLineageTopology {
 	    					"creation_date",
 	    					"last_update",
 	    					"timestamp", 
-	    					"past_due_amount",
-	    					"house_debt_acctnum", 
+	    					"house_debt_acctnum",
+	    					"past_due_amount", 
 	    					"term_ids",
 	    					"xhs_credit_check",
 	    					"collected_deposit_amt", 
@@ -230,7 +230,10 @@ public class StormLineageTopology {
 	      HiveOptions ShoppingCartEventTransactionHiveOptions = new HiveOptions(constants.getHiveMetaStoreURI(),
 	    				 							constants.getHiveDbName(),
 	    				 							"cart",
-	    				 							ShoppingCartEventHiveMapper);
+	    				 							ShoppingCartEventHiveMapper)
+	    		  									.withTxnsPerBatch(2)
+	    		  									.withBatchSize(100)
+	    		  									.withIdleTimeout(10);
 	      
 	      /*
 	      KafkaBolt processedTransactionForwardKafkaBolt = new KafkaBolt()

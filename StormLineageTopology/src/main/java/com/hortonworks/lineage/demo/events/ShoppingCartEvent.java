@@ -17,8 +17,8 @@ public class ShoppingCartEvent {
 	private String creation_date;
 	private String last_update;
 	private String timestamp; 
+	private String house_debt_acctnum;
 	private String past_due_amount;
-	private String house_debt_acctnum; 
 	private String term_ids;
 	private String xhs_credit_check;
 	private String collected_deposit_amt; 

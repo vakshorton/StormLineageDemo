@@ -4,6 +4,13 @@
   <artifactId>StormLineageTopology</artifactId>
   <version>0.0.1-SNAPSHOT</version>
    <dependencies>
+   
+<dependency>
+    <groupId>org.apache.thrift</groupId>
+    <artifactId>libthrift</artifactId>
+    <version>0.9.3</version>
+</dependency>
+   
    <dependency>
             <groupId>org.apache.hive.hcatalog</groupId>
             <artifactId>hive-hcatalog-streaming</artifactId>

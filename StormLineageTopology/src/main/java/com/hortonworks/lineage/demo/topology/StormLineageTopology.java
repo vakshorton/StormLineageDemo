@@ -108,10 +108,10 @@ public class StormLineageTopology {
 	      KafkaSpout customerTransactionValidationKafkaSpout = new KafkaSpout(ProcessedTransactionKafkaSpoutConfig);
 	      
 	      SpoutConfig ShoppingCartEventsKafkaSpoutConfig = new SpoutConfig(hosts, constants.getIncomingTransactionsTopicName(), constants.getZkKafkaPath(), UUID.randomUUID().toString());
-	      incomingTransactionsKafkaSpoutConfig.scheme = new KeyValueSchemeAsMultiScheme(new ShoppingChartEventJSONScheme());
-	      incomingTransactionsKafkaSpoutConfig.ignoreZkOffsets = true;
-	      incomingTransactionsKafkaSpoutConfig.useStartOffsetTimeIfOffsetOutOfRange = true;
-	      incomingTransactionsKafkaSpoutConfig.startOffsetTime = kafka.api.OffsetRequest.LatestTime();
+	      ShoppingCartEventsKafkaSpoutConfig.scheme = new KeyValueSchemeAsMultiScheme(new ShoppingChartEventJSONScheme());
+	      ShoppingCartEventsKafkaSpoutConfig.ignoreZkOffsets = true;
+	      ShoppingCartEventsKafkaSpoutConfig.useStartOffsetTimeIfOffsetOutOfRange = true;
+	      ShoppingCartEventsKafkaSpoutConfig.startOffsetTime = kafka.api.OffsetRequest.LatestTime();
 	      KafkaSpout ShoppingCartEventsKafkaSpout = new KafkaSpout(ShoppingCartEventsKafkaSpoutConfig);
 	      
 	      Map<String, Object> hbConf = new HashMap<String, Object>();

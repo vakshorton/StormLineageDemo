@@ -34,6 +34,7 @@ public class PrintTransaction extends BaseRichBolt {
 			ShoppingCartEvent transaction = (ShoppingCartEvent) tuple.getValueByField("IncomingTransaction");
 			System.out.println("***** Transaction: " + transaction.toString());	
 			collector.ack(tuple);
+			/*
 			collector.emit("HiveStream", new Values(
 				transaction.getCart_id(), 
 				transaction.getBilling_order_id(),
@@ -71,7 +72,7 @@ public class PrintTransaction extends BaseRichBolt {
 				transaction.getCredit_bypass(),
 				transaction.getTax_amount(),
 				transaction.getHd_tech_charge(),
-				transaction.getHsd_repackage()));
+				transaction.getHsd_repackage())); */
 		
 			collector.emit("HBaseStream", new Values(
 				transaction.getCart_id(), 
